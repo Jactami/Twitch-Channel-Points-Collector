@@ -1,0 +1,1 @@
+console.log("Twitch Channel Point Collector running...");

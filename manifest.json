@@ -1,0 +1,17 @@
+{
+    "name": "Twitch Channel Points Collector",
+    "description": "This extension automatically collects channel points while watching streams on twitch.tv",
+    "author": "Jactami",
+    "version": "0.0.1",
+    "manifest_version": 3,
+    "content_scripts": [{
+        "matches": [
+            "*://twitch.tv/*",
+            "*://www.twitch.tv/*"
+        ],
+        "js": [
+            "content.js"
+        ],
+        "run_at": "document_end"
+    }]
+}

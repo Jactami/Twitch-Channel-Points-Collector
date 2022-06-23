@@ -1,3 +1,4 @@
+let video;
 let parent;
 let interval;
 let observer;
@@ -49,12 +50,22 @@ function quit() {
     clearInterval(interval);
 }
 
-window.onload = () => {
+window.addEventListener("load", () => {
+    // listen for stream switches to restart program
+    let video = document.querySelector("video");
+    video.addEventListener("loadedmetadata", () => {
+        quit();
+        run();
+        console.log("Twitch Channel Points Collector: Stream changed");
+
+    });
+
+    // start collecting points!
     run();
     console.log("Twitch Channel Points Collector: Extension running...");
-}
+});
 
-window.onbeforeunload = () => {
+window.addEventListener("beforeunload", () => {
     quit();
     console.log("Twitch Channel Points Collector: Extension stopped.");
-}
+});

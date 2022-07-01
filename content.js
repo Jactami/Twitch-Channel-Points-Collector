@@ -1,29 +1,44 @@
-let video;
+let searchInterval;
 let parent;
-let interval;
-let observer;
+let parentObserver;
+let streamObserver;
 
 function run() {
-    // bind container after page is fully loaded
-    interval = setInterval(() => {
+    // bind container div after it has been loaded
+    searchInterval = setInterval(() => {
         parent = document.querySelector(".community-points-summary > div:last-child");
         if (parent) {
             // check if points are already available and collect them
             collectPoints();
 
             // wait for new channel points
-            observer = new MutationObserver(handleMutation);
-            observer.observe(parent, {
+            parentObserver = new MutationObserver(handleParentMutation);
+            parentObserver.observe(parent, {
                 subtree: true,
                 childList: true
             });
 
-            clearInterval(interval);
+            clearInterval(searchInterval);
         }
     }, 100);
+
+    // listen for stream switches (title changes indicate stream switches)
+    let title = document.title.toLowerCase();
+    streamObserver = new MutationObserver(() => {
+        let newTitle = document.title.toLowerCase();
+        if (title !== newTitle) {
+            title = newTitle;
+            // restart program to fetch updated dom
+            quit();
+            run();
+        }
+    });
+    streamObserver.observe(document.querySelector("title"), {
+        childList: true
+    });
 }
 
-function handleMutation(mutationList) {
+function handleParentMutation(mutationList) {
     mutationList.forEach(mutation => {
         mutation.addedNodes.forEach(_node => {
             if (parent) {
@@ -44,23 +59,12 @@ function collectPoints() {
 }
 
 function quit() {
-    if (observer) {
-        observer.disconnect();
-    }
-    clearInterval(interval);
+    if (parentObserver) parentObserver.disconnect();
+    if (streamObserver) streamObserver.disconnect();
+    clearInterval(searchInterval);
 }
 
 window.addEventListener("load", () => {
-    // listen for stream switches to restart program
-    let video = document.querySelector("video");
-    video.addEventListener("loadedmetadata", () => {
-        quit();
-        run();
-        console.log("Twitch Channel Points Collector: Stream changed");
-
-    });
-
-    // start collecting points!
     run();
     console.log("Twitch Channel Points Collector: Extension running...");
 });

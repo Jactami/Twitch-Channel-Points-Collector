@@ -10,7 +10,7 @@ Twitch repeatedly rewards its users with channel points after watching streams f
     2. Enable the __Developer mode__ temporarily.
     3. Click __Load unpacked extension...__ and select the extension's folder.
 
-* Firfox:
+* Firefox:
     1. Delete the `manifest.json` file and rename `manifest_firefox.json` to `manifest.json`.
     2. Type `about:debugging#/runtime/this-firefox` in the address bar.
     3. Click __Load Temporary Add-on__ and select the `manifest.json` from the extension's folder.
